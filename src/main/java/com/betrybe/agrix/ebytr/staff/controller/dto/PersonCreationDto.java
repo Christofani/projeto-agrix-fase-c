@@ -9,7 +9,7 @@ import com.betrybe.agrix.ebytr.staff.security.Role;
 public record PersonCreationDto(
     String username,
     String password,
-    Role role
+    String role
 ) {
 
   /**

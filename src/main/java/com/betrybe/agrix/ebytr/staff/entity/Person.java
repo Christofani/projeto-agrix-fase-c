@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -28,7 +29,7 @@ public class Person implements UserDetails {
 
   private String password;
 
-  private Role role;
+  private String role;
 
   /**
    * Instantiates a new Person.
@@ -44,7 +45,7 @@ public class Person implements UserDetails {
    * @param password the password
    * @param role     the role
    */
-  public Person(Long id, String username, String password, Role role) {
+  public Person(Long id, String username, String password, String role) {
     this.id = id;
     this.username = username;
     this.password = password;
@@ -74,7 +75,7 @@ public class Person implements UserDetails {
    *
    * @return the role
    */
-  public Role getRole() {
+  public String getRole() {
     return role;
   }
 
@@ -83,7 +84,7 @@ public class Person implements UserDetails {
    *
    * @param role the role
    */
-  public void setRole(Role role) {
+  public void setRole(String role) {
     this.role = role;
   }
 
@@ -104,7 +105,7 @@ public class Person implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of();
+    return List.of(new SimpleGrantedAuthority(role));
   }
 
   /**

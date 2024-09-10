@@ -1,5 +1,6 @@
 package com.betrybe.agrix.ebytr.staff.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,6 +22,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
+  private final JwtFilter jwtFilter;
+
+  /**
+   * Instantiates a new Security config.
+   *
+   * @param jwtFilter the jwt filter
+   */
+  @Autowired
+  public SecurityConfig(JwtFilter jwtFilter) {
+    this.jwtFilter = jwtFilter;
+  }
+
   /**
    * Security filter chain security filter chain.
    *
@@ -40,6 +53,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
             .anyRequest().authenticated()
         )
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
   }
 
