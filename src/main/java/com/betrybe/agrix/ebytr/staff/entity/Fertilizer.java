@@ -14,7 +14,7 @@ import java.util.List;
  * The type Fertilizer.
  */
 @Entity
-@Table(name = "fertilizer")
+@Table(name = "fertilizers")
 public class Fertilizer {
 
   @Id

@@ -17,7 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  * The type Farm.
  */
 @Entity
-@Table(name = "farm")
+@Table(name = "farms")
 @EntityListeners(AuditingEntityListener.class)
 public class Farm {
 

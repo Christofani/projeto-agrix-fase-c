@@ -26,12 +26,12 @@ public class TokenService {
   }
 
   /**
-   * Generat token string.
+   * Generate token string.
    *
    * @param username the username
    * @return the string
    */
-  public String generatToken(String username) {
+  public String generateToken(String username) {
     return JWT.create()
         .withSubject(username)
         .withExpiresAt(generateExpiration())

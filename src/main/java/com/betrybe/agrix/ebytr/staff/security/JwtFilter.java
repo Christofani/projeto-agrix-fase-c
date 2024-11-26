@@ -50,7 +50,7 @@ public class JwtFilter extends OncePerRequestFilter {
       // (3) se existir, validamos o token
       String subject = tokenService.validateToken(token.get());
 
-      // (4) se o tokenfor válido (não houve exceção), encontramos a pessoa associada
+      // (4) se o token for válido (não houve exceção), encontramos a pessoa associada
       UserDetails userDetails = personService.loadUserByUsername(subject);
 
       // (5) informamos o Spring Security que a pessoa está autenticada

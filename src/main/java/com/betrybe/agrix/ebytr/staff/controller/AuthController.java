@@ -50,7 +50,7 @@ public class AuthController {
 
     Authentication auth = authenticationManager.authenticate(usernamePassword);
 
-    String token = tokenService.generatToken(auth.getName());
+    String token = tokenService.generateToken(auth.getName());
 
     return new TokenDto(token);
   }

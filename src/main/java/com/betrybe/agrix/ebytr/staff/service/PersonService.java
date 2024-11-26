@@ -3,6 +3,7 @@ package com.betrybe.agrix.ebytr.staff.service;
 import com.betrybe.agrix.ebytr.staff.entity.Person;
 import com.betrybe.agrix.ebytr.staff.exception.PersonNotFoundException;
 import com.betrybe.agrix.ebytr.staff.repository.PersonRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,7 @@ public class PersonService implements UserDetailsService {
 
   private final PersonRepository personRepository;
 
+
   /**
    * Instantiates a new Person service.
    *
@@ -30,24 +32,61 @@ public class PersonService implements UserDetailsService {
     this.personRepository = personRepository;
   }
 
+
   /**
-   * Returns a person for a given ID.
+   * Create person.
+   *
+   * @param person the person
+   * @return the person
+   */
+  public Person create(Person person) {
+    String hashedPassword = new BCryptPasswordEncoder()
+            .encode(person.getPassword());
+
+    person.setPassword(hashedPassword);
+    return personRepository.save(person);
+  }
+
+
+  /**
+   * Find all list.
+   *
+   * @return the list
+   */
+  public List<Person> findAll() {
+    return personRepository.findAll();
+  }
+
+
+  /**
+   * Gets person by id.
    *
    * @param id the id
    * @return the person by id
+   * @throws PersonNotFoundException the person not found exception
    */
-  public Person getPersonById(Long id) {
+  public Person getPersonById(long id) throws PersonNotFoundException {
+    return personRepository.findById(id).orElseThrow(PersonNotFoundException::new);
+  }
+
+  /**
+   * Delete person by id person.
+   *
+   * @param id the id
+   * @return the person
+   * @throws PersonNotFoundException the person not found exception
+   */
+  public Person deletePersonById(Long id) throws PersonNotFoundException {
     Optional<Person> person = personRepository.findById(id);
 
-    if (person.isEmpty()) {
-      throw new PersonNotFoundException();
-    }
+    personRepository.deleteById(id);
 
     return person.get();
   }
 
+
   /**
-   * Returns a person for a given username.
+   * Gets person by username.
    *
    * @param username the username
    * @return the person by username
@@ -62,23 +101,14 @@ public class PersonService implements UserDetailsService {
     return person.get();
   }
 
-  /**
-   * Creates a new person.
-   *
-   * @param person the person
-   * @return the person
-   */
-  public Person create(Person person) {
-    String hashedPassword = new BCryptPasswordEncoder()
-        .encode(person.getPassword());
 
-    person.setPassword(hashedPassword);
-    return personRepository.save(person);
-  }
+
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return personRepository.findByUsername(username)
         .orElseThrow(() -> new UsernameNotFoundException(username));
   }
+
+
 }

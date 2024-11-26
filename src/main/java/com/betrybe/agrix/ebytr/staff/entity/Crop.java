@@ -17,7 +17,7 @@ import java.util.List;
  * The type Crop.
  */
 @Entity
-@Table(name = "crop")
+@Table(name = "crops")
 public class Crop {
 
   @Id
