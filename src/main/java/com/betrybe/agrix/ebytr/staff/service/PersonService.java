@@ -68,6 +68,35 @@ public class PersonService implements UserDetailsService {
   public Person getPersonById(long id) throws PersonNotFoundException {
     return personRepository.findById(id).orElseThrow(PersonNotFoundException::new);
   }
+  /**
+   * Update person.
+   *
+   * @param person the person with updated details
+   * @param id the id of the person to be updated
+   * @return the updated person
+   * @throws PersonNotFoundException the person not found exception
+   */
+
+  public Person update(Person person, long id) throws PersonNotFoundException {
+    Optional<Person> personOptional = personRepository.findById(id);
+
+    if (personOptional.isPresent()) {
+      Person personToUpdate = personOptional.get();
+
+      // Updating the fields
+      personToUpdate.setUsername(person.getUsername());
+      personToUpdate.setRole(person.getRole());
+
+      // If a new password is provided, rehash and update it
+      if (person.getPassword() != null && !person.getPassword().isEmpty()) {
+        personToUpdate.setPassword(new BCryptPasswordEncoder().encode(person.getPassword()));
+      }
+
+      return personRepository.save(personToUpdate);
+    } else {
+      throw new PersonNotFoundException();
+    }
+  }
 
   /**
    * Delete person by id person.
@@ -77,11 +106,14 @@ public class PersonService implements UserDetailsService {
    * @throws PersonNotFoundException the person not found exception
    */
   public Person deletePersonById(Long id) throws PersonNotFoundException {
-    Optional<Person> person = personRepository.findById(id);
-
-    personRepository.deleteById(id);
-
-    return person.get();
+    Optional<Person> personOptional = personRepository.findById(id);
+    if (personOptional.isPresent()) {
+      Person person = personOptional.get();
+      personRepository.delete(person);
+      return person;
+    } else {
+      throw new PersonNotFoundException();
+    }
   }
 
 
@@ -109,6 +141,5 @@ public class PersonService implements UserDetailsService {
     return personRepository.findByUsername(username)
         .orElseThrow(() -> new UsernameNotFoundException(username));
   }
-
 
 }

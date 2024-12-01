@@ -1,0 +1,64 @@
+{
+  "resources": [
+    {
+      "_id": "req_create_person",
+      "parentId": "__workspace__",
+      "name": "Create Person",
+      "url": "http://localhost:8080/persons",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\"username\": \"john_doe\", \"password\": \"password123\", \"role\": \"admin\"}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_update_person",
+      "parentId": "__workspace__",
+      "name": "Update Person",
+      "url": "http://localhost:8080/persons/{id}",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\"username\": \"john_updated\", \"password\": \"newpassword123\", \"role\": \"user\"}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_get_person_by_id",
+      "parentId": "__workspace__",
+      "name": "Get Person By ID",
+      "url": "http://localhost:8080/persons/{id}",
+      "method": "GET",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_delete_person",
+      "parentId": "__workspace__",
+      "name": "Delete Person",
+      "url": "http://localhost:8080/persons/{id}",
+      "method": "DELETE",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    }
+  ]
+}

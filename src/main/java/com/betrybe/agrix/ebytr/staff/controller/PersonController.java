@@ -1,8 +1,8 @@
 package com.betrybe.agrix.ebytr.staff.controller;
 
-
 import com.betrybe.agrix.ebytr.staff.controller.dto.PersonCreationDto;
 import com.betrybe.agrix.ebytr.staff.controller.dto.PersonDto;
+import com.betrybe.agrix.ebytr.staff.controller.dto.PersonUpdateDto;
 import com.betrybe.agrix.ebytr.staff.entity.Person;
 import com.betrybe.agrix.ebytr.staff.exception.PersonNotFoundException;
 import com.betrybe.agrix.ebytr.staff.service.PersonService;
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 
 /**
  * The type Person controller.
@@ -47,12 +47,24 @@ public class PersonController {
   @ResponseStatus(HttpStatus.CREATED)
   public PersonDto createPerson(@RequestBody PersonCreationDto personDto) {
     Person savedPerson = personService.create(
-        personDto.toEntity()
+            personDto.toEntity()
     );
 
     return PersonDto.fromEntity(savedPerson);
   }
 
+  /**
+   * Find all list.
+   *
+   * @return the list
+   */
+  @GetMapping
+  public List<PersonDto> findAll() {
+    List<Person> persons = personService.findAll();
+
+    return persons.stream().map(PersonDto::fromEntity)
+            .toList();
+  }
 
   /**
    * Gets person by id.
@@ -68,17 +80,22 @@ public class PersonController {
   }
 
   /**
-   * Find all list.
+   * Update person person dto.
    *
-   * @return the list
+   * @param id        the id
+   * @param personDto the person dto
+   * @return the person dto
    */
-  @GetMapping
-  public List<PersonDto> findAll() {
-    List<Person> persons = personService.findAll();
+  @PutMapping("/{id}")
+  public PersonDto updatePerson(
+          @PathVariable("id") long id, @RequestBody PersonUpdateDto personDto
+  ) {
+    Person updatedPerson = personService.update(personDto.toEntity(id), id);
 
-    return persons.stream().map(PersonDto::fromEntity)
-            .toList();
+    return PersonDto.fromEntity(updatedPerson);
+
   }
+
 
   /**
    * Delete person person dto.
