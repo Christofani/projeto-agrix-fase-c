@@ -5,8 +5,9 @@ FROM maven:3-openjdk-17 AS build-image
 WORKDIR /to-build-app
 
 # Copia os arquivos do projeto para o diretório de trabalho
-COPY pom.xml .
-COPY src ./src
+COPY ./src/main/ ./src/main/
+COPY pom.xml mvnw ./
+
 
 # Baixa as dependências do Maven para cache
 RUN mvn dependency:go-offline
