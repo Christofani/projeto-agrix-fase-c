@@ -102,13 +102,9 @@ public class PersonService implements UserDetailsService {
   }
 
 
-
-
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return personRepository.findByUsername(username)
         .orElseThrow(() -> new UsernameNotFoundException(username));
   }
-
-
 }
