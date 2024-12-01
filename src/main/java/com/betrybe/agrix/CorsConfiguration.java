@@ -1,6 +1,7 @@
 package com.betrybe.agrix;
 
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 public class CorsConfiguration  implements WebMvcConfigurer {
   @Override
