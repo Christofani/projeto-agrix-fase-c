@@ -12,9 +12,11 @@ import com.betrybe.agrix.ebytr.staff.service.FarmService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -43,6 +45,33 @@ public class FarmController {
   }
 
   /**
+   * Create farmId dto.
+   *
+   * @param farmCreationDto the farmId creation dto
+   * @return the farmId dto
+   */
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public FarmDto createFarm(@RequestBody FarmCreationDto farmCreationDto) {
+    return FarmDto.fromEntity(
+            farmService.create(farmCreationDto.toEntity())
+    );
+  }
+
+  /**
+   * Gets all farms.
+   *
+   * @return the all farms
+   */
+  @GetMapping
+  public List<FarmDto> getAllFarms() {
+    List<Farm> allFarms = farmService.findAll();
+    return allFarms.stream()
+            .map(FarmDto::fromEntity)
+            .toList();
+  }
+
+  /**
    * Gets farmId by id.
    *
    * @param id the id
@@ -57,31 +86,44 @@ public class FarmController {
   }
 
   /**
-   * Gets all farms.
+   * Update farm farm dto.
    *
-   * @return the all farms
+   * @param id            the id
+   * @param farmUpdateDto the farm update dto
+   * @return the farm dto
+   * @throws FarmNotFoundException the farm not found exception
    */
-  @GetMapping
-  public List<FarmDto> getAllFarms() {
-    List<Farm> allFarms = farmService.findAll();
-    return allFarms.stream()
-        .map(FarmDto::fromEntity)
-        .toList();
+  @PutMapping("/{id}")
+  public FarmDto updateFarm(
+          @PathVariable Long id, @RequestBody FarmCreationDto farmUpdateDto
+  ) throws FarmNotFoundException {
+    // Busca a fazenda com o ID fornecido
+    Farm farmToUpdate = farmService.findById(id);
+
+    // Atualiza os campos da fazenda diretamente com os dados do DTO
+    farmToUpdate.setName(farmUpdateDto.name());
+    farmToUpdate.setSize(farmUpdateDto.size());
+
+    // Salva as alterações
+    Farm updatedFarm = farmService.update(farmToUpdate);
+
+    // Retorna o DTO com os dados da fazenda atualizada
+    return FarmDto.fromEntity(updatedFarm);
   }
 
+
   /**
-   * Create farmId dto.
+   * Delete farm.
    *
-   * @param farmCreationDto the farmId creation dto
-   * @return the farmId dto
+   * @param id the farm id to be deleted
+   * @throws FarmNotFoundException if the farm is not found
    */
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public FarmDto createFarm(@RequestBody FarmCreationDto farmCreationDto) {
-    return FarmDto.fromEntity(
-        farmService.create(farmCreationDto.toEntity())
-    );
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteFarm(@PathVariable Long id) throws FarmNotFoundException {
+    farmService.delete(id);
   }
+
 
   /**
    * Create crop for farm crop dto.

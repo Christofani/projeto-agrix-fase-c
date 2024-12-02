@@ -33,6 +33,21 @@ public class CropService {
   }
 
   /**
+   * Create crop for farm crop.
+   *
+   * @param farmId the farm id
+   * @param crop   the crop
+   * @return the crop
+   * @throws FarmNotFoundException the farm not found exception
+   */
+  public Crop createCropForFarm(Long farmId, Crop crop) throws FarmNotFoundException {
+    Farm farm = farmService.findById(farmId);
+    crop.setFarm(farm);
+
+    return cropRepository.save(crop);
+  }
+
+  /**
    * Gets all crops.
    *
    * @return the all crops
@@ -51,6 +66,42 @@ public class CropService {
   public Crop findById(Long id) throws CropNotFoundException {
     return cropRepository.findById(id)
         .orElseThrow(CropNotFoundException::new);
+  }
+
+  /**
+   * Update an existing crop.
+   *
+   * @param crop the crop to be updated
+   * @return the updated crop
+   * @throws CropNotFoundException if the crop is not found
+   */
+  public Crop update(Crop crop) throws CropNotFoundException {
+    // Busca a crop existente
+    Crop existingCrop = cropRepository.findById(crop.getId())
+            .orElseThrow(CropNotFoundException::new);
+
+    // Atualiza os campos da crop
+    existingCrop.setName(crop.getName());
+    existingCrop.setPlantedArea(crop.getPlantedArea());
+    existingCrop.setPlantedDate(crop.getPlantedDate());
+    existingCrop.setHarvestDate(crop.getHarvestDate());
+
+    // Salva a crop atualizada
+    return cropRepository.save(existingCrop);
+  }
+
+
+  /**
+   * Delete a crop.
+   *
+   * @param id the ID of the crop to be deleted
+   * @throws CropNotFoundException if the crop is not found
+   */
+  public void delete(Long id) throws CropNotFoundException {
+    Crop existingCrop = cropRepository.findById(id)
+            .orElseThrow(CropNotFoundException::new);
+
+    cropRepository.delete(existingCrop); // Exclui a crop
   }
 
   /**
@@ -79,18 +130,4 @@ public class CropService {
     return cropRepository.findAllByHarvestDateBetween(start, end);
   }
 
-  /**
-   * Create crop for farm crop.
-   *
-   * @param farmId the farm id
-   * @param crop   the crop
-   * @return the crop
-   * @throws FarmNotFoundException the farm not found exception
-   */
-  public Crop createCropForFarm(Long farmId, Crop crop) throws FarmNotFoundException {
-    Farm farm = farmService.findById(farmId);
-    crop.setFarm(farm);
-
-    return cropRepository.save(crop);
-  }
 }

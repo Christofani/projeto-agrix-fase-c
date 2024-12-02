@@ -55,4 +55,36 @@ public class FarmService {
     return farmRepository.findById(id)
         .orElseThrow(FarmNotFoundException::new);
   }
+
+  /**
+   * Update farm.
+   *
+   * @param farm the farm to be updated
+   * @return the updated farm
+   * @throws FarmNotFoundException if the farm is not found
+   */
+  public Farm update(Farm farm) throws FarmNotFoundException {
+    Farm existingFarm = farmRepository.findById(farm.getId())
+            .orElseThrow(FarmNotFoundException::new);
+
+    // Atualiza os dados da fazenda
+    existingFarm.setName(farm.getName());
+    existingFarm.setSize(farm.getSize());
+    // Adicione outros campos conforme necessário para atualizar
+
+    return farmRepository.save(existingFarm); // Salva a fazenda atualizada
+  }
+
+  /**
+   * Delete farm.
+   *
+   * @param id the id of the farm to be deleted
+   * @throws FarmNotFoundException if the farm is not found
+   */
+  public void delete(Long id) throws FarmNotFoundException {
+    Farm existingFarm = farmRepository.findById(id)
+            .orElseThrow(FarmNotFoundException::new);
+
+    farmRepository.delete(existingFarm); // Exclui a fazenda
+  }
 }
