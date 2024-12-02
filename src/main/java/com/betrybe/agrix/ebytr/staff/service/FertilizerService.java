@@ -58,18 +58,35 @@ public class FertilizerService {
   }
 
   /**
-   * Delete fertilizer by id fertilizer.
+   * Update fertilizer.
    *
-   * @param id the id
+   * @param fertilizer the fertilizer
    * @return the fertilizer
    * @throws FertilizerNotFoundException the fertilizer not found exception
    */
-  public Fertilizer deleteFertilizerById(Long id) throws FertilizerNotFoundException {
-    Optional<Fertilizer> fertilizer = fertilizerRepository.findById(id);
+  public Fertilizer update(Fertilizer fertilizer) throws FertilizerNotFoundException {
+    Fertilizer fertilizerExisted = fertilizerRepository.findById(fertilizer.getId())
+            .orElseThrow(FertilizerNotFoundException::new);
 
-    fertilizerRepository.deleteById(id);
+    fertilizerExisted.setName(fertilizer.getName());
+    fertilizerExisted.setBrand(fertilizer.getBrand());
+    fertilizerExisted.setComposition(fertilizer.getComposition());
 
-    return fertilizer.get();
+    return fertilizerRepository.save(fertilizerExisted);
+  }
+
+
+  /**
+   * Delete fertilizer by id.
+   *
+   * @param id the id
+   * @throws FertilizerNotFoundException the fertilizer not found exception
+   */
+  public void deleteFertilizerById(Long id) throws FertilizerNotFoundException {
+    Fertilizer existedFertilizer = fertilizerRepository.findById(id)
+            .orElseThrow(FertilizerNotFoundException::new);
+
+    fertilizerRepository.delete(existedFertilizer);
   }
 
 }

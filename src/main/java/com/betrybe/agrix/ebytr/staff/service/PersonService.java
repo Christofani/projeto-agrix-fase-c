@@ -47,7 +47,6 @@ public class PersonService implements UserDetailsService {
     return personRepository.save(person);
   }
 
-
   /**
    * Find all list.
    *
@@ -70,6 +69,36 @@ public class PersonService implements UserDetailsService {
   }
 
   /**
+   * Update person.
+   *
+   * @param person the person
+   * @param id     the id
+   * @return the person
+   * @throws PersonNotFoundException the person not found exception
+   */
+  public Person update(Person person, long id) throws PersonNotFoundException {
+    Optional<Person> personOptional = personRepository.findById(id);
+
+    if (personOptional.isPresent()) {
+      Person personToUpdate = personOptional.get();
+
+      // Updating the fields
+      personToUpdate.setUsername(person.getUsername());
+      personToUpdate.setRole(person.getRole());
+
+      // If a new password is provided, rehash and update it
+      if (person.getPassword() != null && !person.getPassword().isEmpty()) {
+        personToUpdate.setPassword(new BCryptPasswordEncoder().encode(person.getPassword()));
+      }
+
+      return personRepository.save(personToUpdate);
+    } else {
+      throw new PersonNotFoundException();
+    }
+  }
+
+
+  /**
    * Delete person by id person.
    *
    * @param id the id
@@ -77,12 +106,17 @@ public class PersonService implements UserDetailsService {
    * @throws PersonNotFoundException the person not found exception
    */
   public Person deletePersonById(Long id) throws PersonNotFoundException {
-    Optional<Person> person = personRepository.findById(id);
+    Optional<Person> personOptional = personRepository.findById(id);
 
-    personRepository.deleteById(id);
-
-    return person.get();
+    if (personOptional.isPresent()) {
+      Person person = personOptional.get();
+      personRepository.delete(person);
+      return person;
+    } else {
+      throw new PersonNotFoundException();
+    }
   }
+
 
 
   /**

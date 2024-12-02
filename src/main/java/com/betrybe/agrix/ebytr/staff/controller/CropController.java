@@ -1,5 +1,6 @@
 package com.betrybe.agrix.ebytr.staff.controller;
 
+import com.betrybe.agrix.ebytr.staff.controller.dto.CropCreationDto;
 import com.betrybe.agrix.ebytr.staff.controller.dto.CropDto;
 import com.betrybe.agrix.ebytr.staff.entity.Crop;
 import com.betrybe.agrix.ebytr.staff.exception.CropNotFoundException;
@@ -9,11 +10,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -64,13 +70,46 @@ public class CropController {
   }
 
   /**
+   * Update crop crop dto.
+   *
+   * @param id              the id
+   * @param cropCreationDto the crop creation dto
+   * @return the crop dto
+   * @throws CropNotFoundException the crop not found exception
+   */
+  @PutMapping("/{id}")
+  public CropDto updateCrop(
+          @PathVariable Long id, @RequestBody CropCreationDto cropCreationDto
+  ) throws CropNotFoundException {
+    Crop cropToUpdate = cropService.findById(id);
+    cropToUpdate.setName(cropCreationDto.name());
+    cropToUpdate.setPlantedArea(cropCreationDto.plantedArea());
+    cropToUpdate.setPlantedDate(cropCreationDto.plantedDate());
+    cropToUpdate.setHarvestDate(cropCreationDto.harvestDate());
+
+    Crop updatedCrop = cropService.update(cropToUpdate);
+    return CropDto.fromEntity(updatedCrop);
+  }
+
+  /**
+   * Delete crop.
+   *
+   * @param id the id of the crop to be deleted
+   * @throws CropNotFoundException the crop not found exception
+   */
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteCrop(@PathVariable Long id) throws CropNotFoundException {
+    cropService.delete(id);
+  }
+
+  /**
    * Search crops by date range list.
    *
    * @param start the start
    * @param end   the end
    * @return the list
    */
-
   @GetMapping("search")
   public List<CropDto> searchCropsByDateRange(
       @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
